@@ -2,6 +2,10 @@ package com.ecommerce.ecommerce.controllers;
 
 import com.ecommerce.ecommerce.entities.Product;
 import com.ecommerce.ecommerce.services.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +16,18 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/products")
+@Tag(name = "Routes of Products", description = "CRUD of Products")
 public class ProductController {
     @Autowired private ProductService productService;
 
     @PostMapping
+    @Operation(summary = "Create a product")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "200", description = "Product retrieved successfully"),
+            @ApiResponse( responseCode = "201", description = "Product created successfully"),
+            @ApiResponse( responseCode = "404", description = "Product not found"),
+            @ApiResponse( responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<Product> createProduct(@RequestBody Product data) {
         try {
             Product product = productService.saveProduct(data);
@@ -27,6 +39,12 @@ public class ProductController {
     }
 
     @GetMapping
+    @Operation(summary = "Get a list of all products")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "200", description = "Products retrieved successfully"),
+            @ApiResponse( responseCode = "404", description = "Products not found"),
+            @ApiResponse( responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<List<Product>> getAllProducts() {
         try {
             List<Product> products = productService.readProducts();
@@ -42,6 +60,12 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get a product by ID")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "200", description = "Product retrieved successfully"),
+            @ApiResponse( responseCode = "404", description = "Product not found"),
+            @ApiResponse( responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<Object> getProductById(@PathVariable Long id) {
         try {
             Optional<Product> product = productService.getProductById(id);
@@ -56,6 +80,13 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}")
+    @Operation(summary = "Update a product by ID")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "200", description = "Product retrieved successfully"),
+            @ApiResponse( responseCode = "201", description = "Product updated successfully"),
+            @ApiResponse( responseCode = "404", description = "Product not found"),
+            @ApiResponse( responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product data) {
         try {
             Optional<Product> optionalProduct = productService.getProductById(id);
@@ -76,6 +107,13 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a product by ID")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "200", description = "Product retrieved successfully"),
+            @ApiResponse( responseCode = "201", description = "Product deleted successfully"),
+            @ApiResponse( responseCode = "404", description = "Product not found"),
+            @ApiResponse( responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<Object> deleteProduct(@PathVariable Long id) {
         try {
             Optional<Product> product = productService.getProductById(id);

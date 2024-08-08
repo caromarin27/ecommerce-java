@@ -2,6 +2,10 @@ package com.ecommerce.ecommerce.controllers;
 
 import com.ecommerce.ecommerce.entities.Client;
 import com.ecommerce.ecommerce.services.ClientService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +15,13 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/v1/clients")
+@RequestMapping("api/v1/auth")
+@Tag(name= "Routes of Clients", description = "CRUD of Clients")
 public class ClientsController {
     @Autowired private ClientService service;
 
-    @PostMapping
+    @PostMapping("/register")
+    @Operation(summary = "Create a new Client")
     public ResponseEntity<Client> createClient(@RequestBody Client data) {
         try {
             Client client = service.saveClient(data);
@@ -27,6 +33,13 @@ public class ClientsController {
     }
 
     @GetMapping
+    @Operation(summary = "Get a list of all Clients")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "200", description = "Client retrieved successfully"),
+            @ApiResponse( responseCode = "201", description = "Client created successfully"),
+            @ApiResponse( responseCode = "404", description = "Client not found"),
+            @ApiResponse( responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<List<Client>> readClient() {
         try {
             List<Client> clients = service.readClients();
@@ -38,6 +51,12 @@ public class ClientsController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get a Client by ID")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "201", description = "Client created successfully"),
+            @ApiResponse( responseCode = "404", description = "Client not found"),
+            @ApiResponse( responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<Object> readClientById(@PathVariable  Long id) {
         try {
             Optional<Client> client = service.getClientById(id);
@@ -52,7 +71,13 @@ public class ClientsController {
         }
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/me/{id}")
+    @Operation(summary = "Update a Client")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "201", description = "Client update successfully"),
+            @ApiResponse( responseCode = "404", description = "Client not found"),
+            @ApiResponse( responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<Client> updateClient(@PathVariable Long id, @RequestBody Client data) {
         try {
             Optional<Client> optionalClient = service.getClientById(id);
@@ -72,6 +97,12 @@ public class ClientsController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a Client")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "201", description = "Client deleted successfully"),
+            @ApiResponse( responseCode = "404", description = "Client not found"),
+            @ApiResponse( responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<Client> deleteClient(@PathVariable Long id) {
         try {
             service.deleteClient(id);

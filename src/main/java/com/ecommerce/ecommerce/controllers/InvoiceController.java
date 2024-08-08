@@ -3,6 +3,10 @@ package com.ecommerce.ecommerce.controllers;
 import com.ecommerce.ecommerce.entities.Client;
 import com.ecommerce.ecommerce.entities.Invoice;
 import com.ecommerce.ecommerce.services.InvoiceService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +17,18 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/invoices")
+@Tag(name = "Routes of Invoices", description = "CRUD of Invoices")
 public class InvoiceController {
     @Autowired private InvoiceService invoiceService;
 
     @PostMapping
+    @Operation(summary = "Create invoice from Client")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "200", description = "Invoice retrieved successfully"),
+            @ApiResponse( responseCode = "201", description = "Invoice created successfully"),
+            @ApiResponse( responseCode = "404", description = "Invoice not found"),
+            @ApiResponse( responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<Invoice> createInvoice(@RequestBody Invoice data) {
         try {
             Invoice invoice = invoiceService.saveInvoice(data);
@@ -28,6 +40,13 @@ public class InvoiceController {
     }
 
     @GetMapping
+    @Operation(summary = "Get last invoice from Client")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "200", description = "Invoice retrieved successfully"),
+            @ApiResponse( responseCode = "201", description = "Invoice created successfully"),
+            @ApiResponse( responseCode = "404", description = "Invoice not found"),
+            @ApiResponse( responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<List<Invoice>> readInvoices() {
         try {
             List<Invoice> invoices = invoiceService.readInvoices();
@@ -39,6 +58,13 @@ public class InvoiceController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get invoice by id from Client")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "200", description = "Invoice retrieved successfully"),
+            @ApiResponse( responseCode = "201", description = "Invoice created successfully"),
+            @ApiResponse( responseCode = "404", description = "Invoice not found"),
+            @ApiResponse( responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<Object> readInvoiceById(@PathVariable  Long id) {
         try {
             Optional<Invoice> invoice = invoiceService.getInvoiceById(id);
@@ -54,6 +80,12 @@ public class InvoiceController {
     }
 
     @PatchMapping("/{id}")
+    @Operation(summary = "Update a invoice by id from Client")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "201", description = "Invoice updated successfully"),
+            @ApiResponse( responseCode = "404", description = "Invoice not found"),
+            @ApiResponse( responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<Invoice> updateInvoice(@PathVariable Long id, @RequestBody Invoice data) {
         try {
             Optional<Invoice> optionalInvoice = invoiceService.getInvoiceById(id);
@@ -75,6 +107,12 @@ public class InvoiceController {
 
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a invoice from Client")
+    @ApiResponses(value = {
+            @ApiResponse( responseCode = "201", description = "Invoice deleted successfully"),
+            @ApiResponse( responseCode = "404", description = "Invoice not found"),
+            @ApiResponse( responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<Invoice> deleteInvoice(@PathVariable Long id) {
         try {
             invoiceService.deleteInvoice(id);
